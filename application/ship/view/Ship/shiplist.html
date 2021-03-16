@@ -1,0 +1,215 @@
+<style>
+    table.sea {
+        margin: 15px 10px 15px 55px;
+    }
+
+    .sea td {
+        padding: 0 5px;
+    }
+
+    .sea td #shipname {
+        width: 100px;
+    }
+
+    #xiao, #da {
+        width: 80px;
+    }
+
+    #cname {
+        width: 200px;
+    }
+
+    #Contact {
+        width: 100px;
+    }
+
+    #btn {
+        padding: 0 5px;
+        line-height: 20px;
+    }
+
+    .two_third {
+        width: 100%;
+    }
+
+    .stdtable thead th.center, td.center {
+        text-align: center;
+    }
+
+    a.btn {
+        background-image: none;
+        float: right;
+    }
+
+    .Wdate {
+        width: 100px;
+    }
+</style>
+<div id="contentwrapper" class="contentwrapper">
+    <div id="updates" class="subcontent">
+        <div class="notibar announcement">
+            <a class="close"></a>
+            <h3>依据条件搜索船舶资料<span style="color:#ccc;font-size:.6em;line-height:1em">(如果不输入任何条件默认显示所有数据)</span></h3>
+            <form method="get">
+                <p></p>
+                <table class="sea">
+                    <tr>
+                        <td>船名:</td>
+                        <td><input id="shipname" value="{$Think.get.ShipName|default=''}"
+                                   name="ShipName" type="text"></td>
+                        <td>吨位:</td>
+                        <td><input type="text" value="{$Think.get.xiao|default=''}" name="xiao" id="xiao"/>
+                            -
+                            <input min="0" type="text" value="{$Think.get.da|default=''}" name="da" id="da"/>
+                        </td>
+                        <td>公司名称:</td>
+                        <td><input id="cname" value="{$Think.get.CompanyName|default=''}"
+                                   name="CompanyName" type="text"></td>
+                        <td>联系人:</td>
+                        <td>
+                            <input id="Contact" name="Contact" value="{$Think.get.Contact|default=''}"
+                                   type="text">
+                        </td>
+                        <td><input id="btn" type="submit" value="搜索"/></td>
+                    </tr>
+                </table>
+
+            </form>
+        </div><!-- notification announcement -->
+        <div class="two_third ">
+            <div class="contenttitle2 nomargintop">
+                <h3>搜寻结果</h3>
+            </div><!--contenttitle-->
+            <br clear="all"/>
+            <table cellpadding="0" cellspacing="0" border="0" class="stdtable stdtablecb overviewtable2">
+                <thead>
+                <tr>
+                    <th class="center">编号</th>
+                    <th class="center">船名</th>
+                    <th class="center">吨位</th>
+                    <th class="center">船期</th>
+                    <th class="center">公司名称</th>
+                    <th class="center">联系人</th>
+                    <th class="center">备注</th>
+                    <th class="center"></th>
+                </tr>
+
+                <tbody>
+                {foreach $ships as $ship}
+                <tr value="{$ship.Id}">
+                    <td class="center">{$ship.Id}</td>
+                    <td class="center">{$ship.ShipName}</td>
+                    <td class="center">{$ship.ZaiZhongDun}</td>
+                    <td class="center">
+                        <input style="width: 120px" value="{$ship.ChuanQi}" class="Wdate" type="date" name="time"/>
+                    </td>
+                    <td class="center">{$ship.CompanyName}</td>
+                    <td class="center">{$ship.Contact1}({$ship.Tel1})</td>
+                    <td class="center">
+                        <input type="text" style="width: 100%;color:black"
+                               value="{$ship.Mark}" class="Mark">
+                    </td>
+                    <td class="center"><a href="{:url('/shipdetails',['id'=>$ship.Id])}">详情</a>
+                        {if $Think.session.user.RoleId==1}
+                        <a class="del" style="color: red;cursor: default" value="{$ship.Id}">删除</a>
+                        {/if}
+                    </td>
+                </tr>
+                {/foreach}
+                </tbody>
+
+            </table>
+
+            <a class="btn btn-info" href="{:url('/exportExcel')}" id="export">导出Excel文件</a>
+            <tfoot>
+            <tr>
+                <td colspan="8">
+                    每页{$a.per_page}条数据，共有{$a.total}条数据；
+                </td>
+            </tr>
+            </tfoot>
+        </div>
+        {$ships->render()}
+        <br clear="all"/>
+        <!--two_third dashboard_left -->
+    </div><!-- #updates -->
+
+</div><!--contentwrapper-->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    删除提示信息
+                </h4>
+            </div>
+            <div class="modal-body">
+                确定删除这条数据吗？
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                </button>
+                <button type="button" id="ok" class="btn btn-primary">
+                    确定删除
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+<script src="__PUBLIC__/js/jquery.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/bootstrap.min.js"></script>
+<script>
+//    $("#export").click(function () {
+//        history.go(0);
+//        setInterval(jump,10);
+//    })
+//    function jump() {
+//        location.href("{:url('/exportExcel')}")
+//    }
+    $('.Wdate').blur(function () {
+        var id = $(this).closest('tr').attr('value');
+        $.ajax({
+            url: "{:url('/changeShip')}",
+            type: 'post',
+            data: {
+                id: id,
+                date: this.value
+            }
+        })
+    })
+
+    $('.Mark').blur(function () {
+        var id = $(this).closest('tr').attr('value');
+        $.ajax({
+            url: "{:url('/changeShip')}",
+            type: 'post',
+            data: {
+                id: id,
+                mark: this.value
+            }
+        })
+    })
+
+    var id = 0;
+    $(".del").click(function () {
+        $('#myModal').modal('show');
+        id = $(this).attr('value');
+    })
+    $("#ok").click(function () {
+        $.ajax({
+            url: "{:url('/deleteShip')}",
+            type: 'post',
+            data: {
+                id: id
+            },
+            success: function (data) {
+                history.go(0);
+            }
+        })
+    })
+</script>
+
+

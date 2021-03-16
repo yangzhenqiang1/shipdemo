@@ -1,0 +1,218 @@
+<style>
+    table {
+        margin-left: 55px;
+    }
+
+    td {
+        position: relative;
+        padding: 10px;
+    }
+
+    .number {
+        width: 80px;
+    }
+    #contentwrapper{
+        margin-left: -140px;
+    }
+    span.invalid {
+        position: absolute;
+        left: 10px;
+        top:30px;
+        color: red;
+
+    }
+</style>
+<div class="centercontent">
+    <div id="contentwrapper" class="contentwrapper">
+        <div id="updates" class="subcontent">
+            <div class="notibar announcement">
+
+                <h3>在此处修改船舶信息</h3>
+                <form id="formship" action="{:url('/modifyShipAction')}" method="post">
+                    <input type="hidden" name="Id" value="{$Request.route.id}"/>
+                    <table>
+                        <tr>
+                            <td>船名:</td>
+                            <td>{$ship.ShipName}</td>
+                            <td>公司名称:</td>
+                            <td colspan="3"><input value="{$ship.CompanyName}" id="cname" style="width:250px"
+                                                   name="CompanyName" type="text"></td>
+                        </tr>
+                        <tr>
+                            <td>总吨位:</td>
+                            <td>{$ship.ZongDun}</td>
+                            <td>载重吨:</td>
+                            <td><input class="number" value="{$ship.ZaiZhongDun}" name="ZaiZhongDun" type="text"></td>
+                            <td>净吨:</td>
+                            <td><input class="number" value="{$ship.JingDun}" name="JingDun" type="text"></td>
+
+                        </tr>
+                        <tr>
+                            <td>舱口数:</td>
+                            <td><input class="number" value="{$ship.CangkouShu}" name="CangkouShu" type="text"></td>
+                            <td>总仓容:</td>
+                            <td><input class="number" value="{$ship.ZongCangRong}" name="ZongCangRong" type="text"></td>
+                            <td>满载吃水:</td>
+                            <td><input class="number" value="{$ship.ManzaiChishui}" name="ManzaiChishui" type="text">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>船长:</td>
+                            <td><input class="number" value="{$ship.Length}" name="Length" type="text"></td>
+                            <td>船宽:</td>
+                            <td colspan="3"><input class="number" value="{$ship.Width}" name="Width" type="text"></td>
+                        </tr>
+                        <tr>
+                            <td>船期:</td>
+                            <td colspan="5"><input class="Wdate" name="ChuanQi" value="{$ship.ChuanQi}" style="width: 120px" type="text" readonly onclick="new WdatePicker()">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>联系人1:</td>
+                            <td><input name="Contact1" value="{$ship.Contact1}" type="text"></td>
+                            <td>联系电话1:</td>
+                            <td colspan="3"><input name="Tel1" value="{$ship.Tel1}" type="text"></td>
+                        </tr>
+
+                        <tr>
+                            <td>联系人2:</td>
+                            <td><input name="Contact2" value="{$ship.Contact2}" type="text"></td>
+                            <td>联系电话2:</td>
+                            <td colspan="3"><input name="Tel2" value="{$ship.Tel2}" type="text"></td>
+                        </tr>
+                        <tr>
+                            <td>联系人3:</td>
+                            <td><input name="Contact3" value="{$ship.Contact3}" type="text"></td>
+                            <td>联系电话3:</td>
+                            <td colspan="3"><input name="Tel3" value="{$ship.Tel3}" type="text"></td>
+                        </tr>
+
+                        <tr>
+                            <td>备注:</td>
+                            <td colspan="5"><input style="width: 60%" type="text" value="{$ship.Mark}" name="Mark"></td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="6" style="text-align: center">
+                                <input id="btn" class="btn btn-primary" style="width: auto" type="submit"
+                                       value="修改"/></td>
+                        </tr>
+                    </table>
+                </form>
+            </div><!-- notification announcement -->
+        </div>
+    </div><!-- centercontent -->
+</div>
+{js href="__PUBLIC__/js/My97DatePicker/WdatePicker.js"}
+{js href="__PUBLIC__/js/My97DatePicker/lang/zh-cn.js"}
+{js href="__PUBLIC__/js/jquery-1.11.1.js"}
+{js href="__PUBLIC__/js/jquery.validate.min.js"}
+<script>
+    $.validator.addMethod("pattern", function (v, e, p) {
+        return p.test(v)||this.optional(e)
+    })
+    $("#formship").validate({
+        rules: {
+            CompanyName: {
+                required: true
+            },
+            ZaiZhongDun:{
+                required:true,
+                number:true,
+                digits:true
+            },
+            JingDun:{
+                required:true,
+                number:true,
+                digits:true
+            },
+            CangkouShu:{
+                required:true,
+                number:true,
+                digits:true
+            },
+            ZongCangRong:{
+                required:true,
+                min:0
+            },
+            ManzaiChishui:{
+                required:true,
+                min:0
+            },
+            Length:{
+                required:true,
+                min:0
+            },
+            Width:{
+                required:true,
+                min:0
+            },
+            Contact1:{
+                required:true
+            },
+            Tel1:{
+                required:true,
+                pattern:/^1[3|4|5|7|8]((\d{1}[ ]\d{4}[ ]\d{4})|\d{9})$/
+            },
+            Tel2:{
+                pattern:/^1[3|4|5|7|8]((\d{1}[ ]\d{4}[ ]\d{4})|\d{9})$/
+            },
+            Tel3:{
+                pattern:/^1[3|4|5|7|8]((\d{1}[ ]\d{4}[ ]\d{4})|\d{9})$/
+            }
+        },
+        messages: {
+            CompanyName: {
+                required: '公司名称不为空'
+            },
+            ZaiZhongDun:{
+                required:'载重吨不能为空',
+                number:'请输入数字',
+                digits:'请输入整数'
+            },
+            JingDun:{
+                required:'净吨不能为空',
+                number:'请输入数字',
+                digits:'请输入整数'
+            },
+            CangkouShu:{
+                required:'舱口数不能为空',
+                number:'请输入数字',
+                digits:'请输入整数'
+            },
+            ZongCangRong:{
+                required:'总仓容不能为空',
+                min:'最小值为0'
+            },
+            ManzaiChishui:{
+                required:'满载吃水不能为空',
+                min:'最小值为0'
+            },
+            Length:{
+                required:'船长不能为空',
+                min:'最小值为0'
+            },
+            Width:{
+                required:'船宽不能为空',
+                min:'最小值为0'
+            },
+            Contact1:{
+                required:'联系人1不能为空'
+            },
+            Tel1:{
+                required:'手机号1不能为空',
+                pattern:'请输入正确的手机号'
+            },
+            Tel2:{
+                pattern:'请输入正确的手机号'
+            },
+            Tel3:{
+                pattern:'请输入正确的手机号'
+            }
+        },
+        errorClass: 'invalid',
+        errorElement: 'span'
+    })
+</script>
+
+

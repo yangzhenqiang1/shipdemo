@@ -1,0 +1,35 @@
+
+<style>
+
+    table {
+        margin: 30px 55px;
+    }
+    #import input{
+        margin: 0;
+        padding: 0;
+        vertical-align: top;
+        font-weight: 100;
+        display: inline-block;
+    }
+    #import input[type=submit]{
+        padding: 2px 10px;
+    }
+</style>
+
+    <div id="contentwrapper" class="contentwrapper">
+        <div id="updates" class="subcontent">
+            <div class="notibar announcement">
+                <h3>船舶资料导入</h3>
+                <form method="post" action="{:url('/insertexcel')}" enctype="multipart/form-data">
+                    <table id="import">
+                        <tr>
+                            <td><input type="file" name="upfile"></td>
+                            <td><input type="submit" class="btn " value="数据导入"></td>
+                        </tr>
+                    </table>
+                </form>
+            </div><!-- notification announcement -->
+        </div><!-- centercontent -->
+    </div>
+
+

@@ -1,0 +1,310 @@
+<style>
+    p div {
+        margin: 1rem 0 0 3rem;
+    }
+
+    #RoleId {
+        height: 2rem;
+    }
+
+    div.notibar ul li span {
+        display: inline-block;
+        width: 6rem;
+        text-align: right;
+        box-sizing: border-box;
+        padding-right: .4rem;
+    }
+
+    .two_third {
+        width: 100%;
+    }
+
+    .stdtable thead th.center, td.center {
+        text-align: center;
+    }
+
+    h5 {
+        margin: 10px 10px 10px 55px
+    }
+
+    td {
+        font-size: 1.2em;
+    }
+
+    a:hover {
+        color: red;
+    }
+
+    #cancel {
+        width: 4rem;
+        margin: 0;
+        font-weight: bold;
+        color: #eee;
+        background: #FB9337;
+        border: 1px solid #F0882C;
+        padding: 7px 10px;
+        -moz-box-shadow: none;
+        -webkit-box-shadow: none;
+        box-shadow: none;
+        cursor: pointer;
+        -moz-border-radius: 2px;
+        -webkit-border-radius: 2px;
+        border-radius: 2px;
+
+    }
+
+    ul input.required {
+        border: solid 1px #f00;
+    }
+
+    div.notibar ul li span.error {
+        color: red;
+        width: auto;
+    }
+
+    span.error {
+        visibility: hidden;
+    }
+
+    li {
+        position: relative;
+    }
+
+    span.invalid {
+        display: block;
+        width: 100px !important;
+        position: absolute;
+        left: 110px;
+        top: 20px;;
+        color: red;
+    }
+    .input-disable{
+        border:none!important;
+    }
+    .hidden{
+        display: none;
+    }
+</style>
+<div id="contentwrapper" class="contentwrapper">
+    <div id="updates" class="subcontent">
+        <div class="notibar announcement">
+            <a class="close"></a>
+            <h3>请输入用户信息</h3>
+            <h5>用户名不能修改，默认密码：123456</h5>
+            <form id="form" method="post" action="{:url('/adduser')}">
+                <ul>
+                    <li>
+                        <p>
+                            <span>用户名: </span><input style="position: relative" id="LoginId" name="LoginId"
+                                                     type="text" placeholder="请输入用户名"
+                                                     autocomplete="off">
+                        </p></li>
+                    <li>
+                        <p>
+                            <span>姓名:</span><input style="position: relative" id="Name" name="Name" type="text"
+                                                   placeholder="请输入姓名"
+                                                   autocomplete="off">
+                        </p>
+                    </li>
+                    <li>
+                        <p>
+                            <span>联系电话:</span><input style="position: relative" id="Tel" name="Tel" type="text"
+                                                     placeholder="请输入手机号"
+                                                     autocomplete="off">
+                        </p>
+                    </li>
+                    <li>
+                        <input type="hidden" name="Id" id="Id">
+                        <p>
+                            <input id="btn" type="submit" value="提交"/>
+                            <input id="cancel" type="button" value="取消"/>
+                        </p>
+                    </li>
+                </ul>
+            </form>
+        </div><!-- notification announcement -->
+
+        <div class="two_third ">
+            <div class="contenttitle2 nomargintop">
+                <h3>用户列表</h3>
+            </div><!--contenttitle-->
+
+
+            <br clear="all"/>
+            <table cellpadding="0" cellspacing="0" border="0" class="stdtable stdtablecb overviewtable2">
+                <thead>
+                <tr>
+                    <th class="center">编号</th>
+                    <th class="center">用户名</th>
+                    <th class="center">姓名</th>
+                    <th class="center">联系电话</th>
+                    <th class="center">职务</th>
+                    <th class="center"></th>
+                </tr>
+
+                <tbody>
+                {foreach $users as $user}
+                <tr>
+                    <td class="center">{$user.Id}</td>
+                    <td class="center">{$user.LoginId}</td>
+                    <td class="center"><input type="text" value="{$user.Name}" style="text-align: center" readonly class="input-disable Name"></td>
+                    <td class="center"><input type="text" value="{$user.Tel}" style="text-align: center" readonly class="input-disable Tel"></td>
+                    <td class="center" value="{$user.RoleId}">{$user.Role.Name}</td>
+                    <td class="center">
+                        <a class="edit" style="cursor: pointer" value="{$user.Id}">修改</a>
+                        <a class="save hidden"  style="cursor: pointer" value="{$user.Id}">保存</a>
+                        <a class="canle hidden"  style="cursor: pointer" value="{$user.Id}">取消</a>
+                        {if $user.RoleId==2}
+                        <a class="del" style="cursor: pointer" value="{$user.Id}">删除</a>
+                        {/if}
+                        <span class="name hidden"  value="{$user.Name}"></span>
+                            <span class="tel hidden"  value="{$user.Tel}"></span>
+                    </td>
+                </tr>
+                {/foreach}
+                </tbody>
+            </table>
+        </div><!--two_third dashboard_left -->
+    </div><!-- #updates -->
+</div><!--contentwrapper-->
+<!-- 模态框（Modal） -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    提示信息
+                </h4>
+            </div>
+            <div class="modal-body">
+                是否删除该用户
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">
+                    取消
+                </button>
+                <button id="ok" type="button" class="btn btn-default btn-primary" data-dismiss="modal">
+                    确定
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+{js href="__PUBLIC__/js/jquery-1.11.1.js"}
+{js href="__PUBLIC__/js/jquery.validate.min.js"}
+<script type="text/javascript" src="__PUBLIC__/js/bootstrap.min.js"></script>
+
+<script>
+    $.validator.addMethod("pattern", function (v, e, p) {
+        return p.test(v) || this.optional(e)
+    })
+    $("#form").validate({
+        rules: {
+            LoginId: {
+                required: true,
+                remote: {
+                    url: '/userExists',
+                    type: 'post',
+                    data: {
+                        LoginId: function () {
+                            return $("#LoginId").val();
+                        }
+                    }
+                }
+            },
+            Name: {
+                required: true
+            },
+            Tel: {
+                required: true,
+                pattern: /^1[3|4|5|7|8]\d{9}$/
+            }
+        },
+        messages: {
+            LoginId: {
+                required: '用户名不为空',
+                remote: '用户名已存在'
+            },
+            Name: {
+                required: '姓名不为空'
+            },
+            Tel: {
+                required: '电话不为空',
+                pattern: '手机号不正确'
+            }
+        },
+        errorClass: 'invalid',
+        errorElement: 'span'
+    })
+
+    var id, tr;
+    $('.del').click(function () {
+        tr = $(this).closest('tr');
+        id = $(this).attr('value');
+        $('#myModal').modal('show');
+    })
+    $('#ok').click(function () {
+        $.ajax({
+            url: "{:url('/deleteUser')}",
+            type: 'post',
+            data: {
+                id: id
+            },
+            success: function (data) {
+                if (data > 0) {
+                    tr.remove();
+                    $('#myModal').modal('hide');
+                }
+            }
+        })
+    })
+
+    $('.edit').click(function () {
+//        alert(1);
+        $("#tag").text('');
+        var tr=$(this).closest('tr');
+        tr.find($(".input-disable")).removeAttr('readonly').removeClass('input-disable');
+        $(this).addClass('hidden');
+        $(this).siblings('a').removeClass('hidden');
+        })
+    $('.canle').click(function () {
+        var tr=$(this).closest('tr');
+        var name=$(this).closest('td').find('.name').attr('value');
+        var tel=$(this).closest('td').find('.tel').attr('value');
+        tr.find('.Name').val(name);
+        tr.find('.Tel').val(tel);
+        tr.find('input').addClass('input-disable');
+        $(this).siblings('a').addClass('hidden');
+        $('.edit').removeClass('hidden');
+        $('.canle').addClass('hidden');
+        $('.del').removeClass('hidden');
+    })
+    $('.save').click(function () {
+        var save = $(this);
+        var tr=$(this).closest('tr');
+//        $('td').on();
+        var id = $(this).attr('value');
+        var name = $(this).closest('tr').find('.Name').val();
+        var tel = $(this).closest('tr').find('.Tel').val();
+        $.ajax({
+            url: "{:url('/editUser')}",
+            type: 'post',
+            data: {
+                id: id,
+                name: name,
+                tel: tel
+            }, success: function (data) {
+                save.parent().find('.Name').val(name);
+                save.parent().find('.Tel').val(tel);
+                $('.canle').click();
+                history.go(0);
+            }
+        })
+
+    })
+</script>
+
+
